@@ -10,6 +10,14 @@ public class CommandProcessor {
         commands.put("SET", new SetCommand());
         commands.put("EXISTS", new ExistsCommand());
         commands.put("DELETE", new DeleteCommand());
+        commands.put("KEYS", new KeysCommand());
+        commands.put("EXPIRE", new ExpireCommand());
+        commands.put("INCR", new IncrCommand());
+        commands.put("DECR", new DecrCommand());
+        commands.put("PERSIST", new PersistCommand());
+        commands.put("TTL", new TTLCommand());
+        commands.put("DBSIZE", new DBSizeCommand());
+       commands.put("FLUSHDB", new FlushDBCommand());
     }
     public String process(List<String> parts,RedisDatabase database){
         if(parts == null || parts.isEmpty()) {

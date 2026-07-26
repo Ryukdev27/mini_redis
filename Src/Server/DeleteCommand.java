@@ -4,9 +4,9 @@ public class DeleteCommand implements Command{
     @Override
     public String execute(List<String> arguments, RedisDatabase database){
         if(arguments.size()!=1)
-            return "ERR wrong arguments";
+            return RespEncoder.error("wrong arguments for 'DEL' command");
         String key=arguments.get(0);
-        boolean deleted=database.Delete(key);
+        boolean deleted=database.delete(key);
         return RespEncoder.integer(deleted ? 1 : 0);
 
     }

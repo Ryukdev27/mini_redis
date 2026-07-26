@@ -12,22 +12,27 @@ public class RespParser {
         String line = reader.readLine();
         if(line == null)
             return null;
-        // RESP array starts with *
         if(line.charAt(0) != '*') {
-            throw new IOException("Invalid RESP command");
+            throw new IOException("Expected RESP array");
         }
-        int numberOfArguments =Integer.parseInt(line.substring(1));
+        int arguments =Integer.parseInt(line.substring(1));
         List<String> command =new ArrayList<>();
-        for(int i = 0; i < numberOfArguments; i++) {
+        for(int i = 0; i < arguments; i++) {
             String lengthLine =reader.readLine();
             if(lengthLine.charAt(0) != '$') {
                 throw new IOException("Expected bulk string");
             }
-            // length is not needed yet
-            int length =
-                    Integer.parseInt(lengthLine.substring(1));
-            String argument =reader.readLine();
-            command.add(argument);
+            int length =Integer.parseInt(lengthLine.substring(1));
+            // Null bulk string
+            if(length == -1) {
+                command.add(null);
+                continue;
+            }
+            String value =reader.readLine();
+            if(value.length() != length) {
+                throw new IOException("Invalid bulk string length");
+            }
+            command.add(value);
         }
         return command;
     }

@@ -4,9 +4,9 @@ public class ExistsCommand implements Command{
     @Override
     public String execute(List<String> arguments, RedisDatabase database){
         if(arguments.size()!=1)
-            return "ERR wrong arguments";
+            return RespEncoder.error("wrong arguments for 'EXISTS' command");
         String key=arguments.get(0);
-        Boolean exists=database.Exists(key);
+        Boolean exists=database.exists(key);
         return RespEncoder.integer(exists ? 1 : 0);
 
 }

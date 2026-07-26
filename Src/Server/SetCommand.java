@@ -6,10 +6,10 @@ public class SetCommand implements Command{
     @Override
     public String execute(List<String> arguments, RedisDatabase database){
          if(arguments.size()!=2)
-            return "ERR wrong arguments";
+            return RespEncoder.error("wrong arguments for 'SET' command");
         String key=arguments.get(0);
         String value=arguments.get(1);
-        database.Set(key, value);
+        database.set(key, value);
         return RespEncoder.simpleString("OK");
     }
 }

@@ -6,7 +6,7 @@ public class Ping implements Command{
     @Override
     public String execute(List<String> arguments, RedisDatabase database){
         if(arguments.size()!=0)
-            return "ERR wrong arguments";
+            return RespEncoder.error("wrong arguments for 'PING' command");
         return RespEncoder.simpleString("PONG");
 }
 }
