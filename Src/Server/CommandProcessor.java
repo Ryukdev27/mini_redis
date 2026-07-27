@@ -17,18 +17,23 @@ public class CommandProcessor {
         commands.put("PERSIST", new PersistCommand());
         commands.put("TTL", new TTLCommand());
         commands.put("DBSIZE", new DBSizeCommand());
-       commands.put("FLUSHDB", new FlushDBCommand());
+        commands.put("FLUSHDB", new FlushDBCommand());
+        commands.put("AUTH",new AuthCommand("secret"));
     }
-    public String process(List<String> parts,RedisDatabase database){
+    public String process(List<String> parts,RedisDatabase database,ClientSession session){
         if(parts == null || parts.isEmpty()) {
             return RespEncoder.error("empty command");
         }
         String cmdName =parts.get(0).toUpperCase();
+        if(!session.isAuthenticated()){
+            if(!cmdName.equals("AUTH") && !cmdName.equals("PING") && !cmdName.equals("EXIT")){
+            return RespEncoder.error("NOAUTH, Authentication Required before starting");}
+        }
         List<String> arguments =parts.subList(1, parts.size());
         Command cmd =commands.get(cmdName);
         if(cmd == null) {
             return RespEncoder.error("unknown command");
         }
-        return cmd.execute(arguments,database);
+        return cmd.execute(arguments,database,session);
     }
 }

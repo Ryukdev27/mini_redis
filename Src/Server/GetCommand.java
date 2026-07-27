@@ -4,7 +4,7 @@ import java.util.List;
 
 public class GetCommand implements Command{
     @Override
-    public String execute(List<String> arguments,RedisDatabase database){
+    public String execute(List<String> arguments,RedisDatabase database, ClientSession session){
         if(arguments.size()!=1)
             return RespEncoder.error("wrong arguments for 'GET' command");
         String value=database.get(arguments.get(0));

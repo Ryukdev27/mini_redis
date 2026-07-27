@@ -6,47 +6,34 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class ClientSession {
-
     private final SocketChannel client;
-
     private final ByteBuffer readBuffer;
-
     private final Queue<ByteBuffer> writeQueue;
-
     private final RespParser parser;
-
-
+    private boolean authenticated;
     public ClientSession(SocketChannel client) {
-
         this.client = client;
-
-        this.readBuffer =
-                ByteBuffer.allocate(4096);
-
-        this.writeQueue =
-                new LinkedList<>();
-
-        this.parser =
-                new RespParser();
+        this.readBuffer =ByteBuffer.allocate(4096);
+        this.writeQueue =new LinkedList<>();
+        this.parser =new RespParser();
+        this.authenticated = false;
     }
-
-
     public SocketChannel getClient() {
         return client;
     }
-
-
     public ByteBuffer getReadBuffer() {
         return readBuffer;
     }
-
-
     public Queue<ByteBuffer> getWriteQueue() {
         return writeQueue;
     }
-
-
     public RespParser getParser() {
         return parser;
+    }
+    public boolean isAuthenticated() {
+        return authenticated;
+    }
+    public void authenticate() {
+        this.authenticated = true;
     }
 }

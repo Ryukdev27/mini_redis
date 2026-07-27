@@ -4,7 +4,7 @@ import java.util.List;
 
 public class PersistCommand implements Command {
     @Override
-    public String execute(List<String> arguments, RedisDatabase database) {
+    public String execute(List<String> arguments, RedisDatabase database, ClientSession session) {
         if (arguments.size() != 1)
             return RespEncoder.error("wrong arguments for 'PERSIST' command");
         String key = arguments.get(0);
