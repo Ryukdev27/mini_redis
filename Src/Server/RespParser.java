@@ -1,39 +1,140 @@
 package mini_redis.Src.Server;
 
-import java.io.*;
-import java.util.*;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RespParser {
-    private final BufferedReader reader;
-    public RespParser(BufferedReader reader) {
-        this.reader = reader;
+
+
+    public List<String> readCommand(ByteBuffer buffer) {
+
+
+        buffer.flip();
+
+
+        try {
+
+
+            if(!buffer.hasRemaining()) {
+                return null;
+            }
+
+
+            if(buffer.get() != '*') {
+                throw new RuntimeException(
+                        "Expected RESP array"
+                );
+            }
+
+
+            int args =
+                    readNumber(buffer);
+
+
+
+            List<String> command =
+                    new ArrayList<>();
+
+
+            for(int i = 0; i < args; i++) {
+
+
+                if(!buffer.hasRemaining())
+                    return null;
+
+
+                if(buffer.get() != '$') {
+                    throw new RuntimeException(
+                            "Expected bulk string"
+                    );
+                }
+
+
+
+                int length =
+                        readNumber(buffer);
+
+
+
+                if(buffer.remaining() < length + 2) {
+
+                    return null;
+
+                }
+
+
+
+                byte[] data =
+                        new byte[length];
+
+
+
+                buffer.get(data);
+
+
+
+                // remove \r\n
+                buffer.get();
+                buffer.get();
+
+
+
+                command.add(
+                        new String(
+                                data,
+                                StandardCharsets.UTF_8
+                        )
+                );
+            }
+
+
+            return command;
+
+
+        }
+        finally {
+
+            buffer.compact();
+
+        }
     }
-    public List<String> readCommand() throws IOException {
-        String line = reader.readLine();
-        if(line == null)
-            return null;
-        if(line.charAt(0) != '*') {
-            throw new IOException("Expected RESP array");
+
+
+
+
+    private int readNumber(ByteBuffer buffer) {
+
+
+        StringBuilder number =
+                new StringBuilder();
+
+
+        while(buffer.hasRemaining()) {
+
+
+            byte b =
+                    buffer.get();
+
+
+
+            if(b == '\r') {
+
+
+                buffer.get(); // consume \n
+
+                break;
+
+            }
+
+
+            number.append((char)b);
         }
-        int arguments =Integer.parseInt(line.substring(1));
-        List<String> command =new ArrayList<>();
-        for(int i = 0; i < arguments; i++) {
-            String lengthLine =reader.readLine();
-            if(lengthLine.charAt(0) != '$') {
-                throw new IOException("Expected bulk string");
-            }
-            int length =Integer.parseInt(lengthLine.substring(1));
-            // Null bulk string
-            if(length == -1) {
-                command.add(null);
-                continue;
-            }
-            String value =reader.readLine();
-            if(value.length() != length) {
-                throw new IOException("Invalid bulk string length");
-            }
-            command.add(value);
-        }
-        return command;
+
+
+        return Integer.parseInt(
+                number.toString()
+        );
     }
 }
