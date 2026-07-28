@@ -12,11 +12,15 @@ public class RedisServer {
     private static final String PASSWORD="secret";
     private static final int PORT = 7379;
     private final RedisDatabase database;
+    private final PersistenceManager persistenceManager;
     private final CommandProcessor processor;
-    public RedisServer() {
-        database = new RedisDatabase();
-        processor = new CommandProcessor();
+    public RedisServer(RedisDatabase database,PersistenceManager persistenceManager) {
+        this.database = database;
+        this.persistenceManager = persistenceManager;
+        this.processor = new CommandProcessor(database,persistenceManager);
     }
+
+
     public void start() {
       try(ServerSocketChannel server =ServerSocketChannel.open();
       Selector selector =Selector.open()) {
@@ -111,7 +115,5 @@ public class RedisServer {
             key.cancel();
         }
     }
-    public static void main(String[] args) {
-        new RedisServer().start();
-    }
+
 }

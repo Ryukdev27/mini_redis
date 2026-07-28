@@ -4,7 +4,9 @@ import java.util.*;
 
 public class CommandProcessor {
     private final Map<String, Command> commands = new HashMap<>();
-    public CommandProcessor() {
+    PersistenceManager persistenceManager =new FilePersistenceManager("dump.rdb");
+    public CommandProcessor(RedisDatabase database,PersistenceManager persistenceManager){
+    this.persistenceManager = persistenceManager;
         commands.put("PING", new Ping());
         commands.put("GET", new GetCommand());
         commands.put("SET", new SetCommand());
@@ -25,6 +27,7 @@ public class CommandProcessor {
         commands.put("LLEN", new LLenCommand());
         commands.put("LPOP", new LPopCommand());
         commands.put("RPOP", new RPopCommand());
+        commands.put("SAVE", new SaveCommand(persistenceManager));
     }
     public String process(List<String> parts,RedisDatabase database,ClientSession session){
         if(parts == null || parts.isEmpty()) {

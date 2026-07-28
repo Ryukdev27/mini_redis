@@ -110,5 +110,10 @@ class RedisDatabase {
         }
         return count;
     }
-    
+    public Map<String, RedisEntry> getEntries(){
+         return new HashMap<>(dataStore);
+    }
+    public void putEntry(String key, RedisEntry entry){
+       dataStore.put(key, entry);
+    } 
 }

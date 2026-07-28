@@ -13,6 +13,9 @@ public class RedisEntry {
     public RedisType getType(){
         return type;
     }
+    public Object getValue(){
+        return value;
+    }
     public String getString(){
         if(type != RedisType.STRING) throw new IllegalStateException("Not a String");
         return (String)value;
