@@ -36,7 +36,7 @@ public class FilePersistenceManager implements PersistenceManager {
         }
     }
     @Override
-    public void load(RedisDatabase database) throws IOException {
+    public void load(RedisDatabase database, CommandProcessor processor) throws IOException {
         File file = new File(path);
         if(!file.exists())
             return;
@@ -69,5 +69,8 @@ public class FilePersistenceManager implements PersistenceManager {
                 return new RedisEntry(RedisType.LIST,list,expiration);
             default:throw new IllegalStateException("Unsupported type");
         }
+        
     }
+    public void append(String command) throws IOException{
+        }
 }
