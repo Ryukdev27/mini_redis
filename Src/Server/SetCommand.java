@@ -9,7 +9,8 @@ public class SetCommand implements Command{
             return RespEncoder.error("wrong arguments for 'SET' command");
         String key=arguments.get(0);
         String value=arguments.get(1);
-        database.set(key, value);
+        RedisEntry entry =new RedisEntry(RedisType.STRING,value,null); 
+        database.set(key, entry);
         return RespEncoder.simpleString("OK");
     }
 }

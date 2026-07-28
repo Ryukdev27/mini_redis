@@ -1,4 +1,4 @@
-package mini_redis.Src.Server;
+/*package mini_redis.Src.Server;
 
 import java.io.*;
 import java.net.Socket;
@@ -47,4 +47,4 @@ public class ClientHandler {
         System.out.println("Handler ended");
     }
 }
-}
+}*/
